@@ -1,0 +1,242 @@
+1. Create Database:
+
+CREATE DATABASE hospital_db;
+USE hospital_db;
+
+Patients Table:
+CREATE TABLE Patients (
+    patient_id INT AUTO_INCREMENT PRIMARY KEY,
+    first_name VARCHAR(50),
+    last_name VARCHAR(50),
+    gender ENUM('Male', 'Female', 'Other'),
+    date_of_birth DATE,
+    phone VARCHAR(15),
+    address VARCHAR(255),
+    status ENUM('Admitted', 'Discharged') DEFAULT 'Admitted',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+Doctors Table:
+CREATE TABLE Doctors (
+    doctor_id INT AUTO_INCREMENT PRIMARY KEY,
+    first_name VARCHAR(50),
+    last_name VARCHAR(50),
+    specialization VARCHAR(100),
+    phone VARCHAR(15),
+    email VARCHAR(100),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+Visits Table (Appointments):
+CREATE TABLE Visits (
+    visit_id INT AUTO_INCREMENT PRIMARY KEY,
+    patient_id INT,
+    doctor_id INT,
+    visit_date DATETIME,
+    diagnosis VARCHAR(255),
+    treatment VARCHAR(255),
+    status ENUM('Scheduled', 'Completed', 'Cancelled') DEFAULT 'Scheduled',
+    FOREIGN KEY (patient_id) REFERENCES Patients(patient_id),
+    FOREIGN KEY (doctor_id) REFERENCES Doctors(doctor_id)
+);
+
+Bills Table:
+CREATE TABLE Bills (
+    bill_id INT AUTO_INCREMENT PRIMARY KEY,
+    visit_id INT,
+    total_amount DECIMAL(10,2),
+    amount_paid DECIMAL(10,2) DEFAULT 0.00,
+    payment_status ENUM('Pending', 'Paid', 'Partial') DEFAULT 'Pending',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (visit_id) REFERENCES Visits(visit_id)
+);
+
+2. Insert Data:
+
+Patients:
+INSERT INTO Patients (first_name, last_name, gender, date_of_birth, phone, address, status)
+VALUES
+('John', 'Doe', 'Male', '1990-05-12', '5551112222', '123 Main St', 'Admitted'),
+('Alice', 'Smith', 'Female', '1985-11-03', '5552223333', '456 Oak Ave', 'Admitted'),
+('Michael', 'Brown', 'Male', '1978-07-21', '5553334444', '789 Pine Rd', 'Discharged'),
+('Sophia', 'Johnson', 'Female', '1992-09-18', '5554445555', '101 Maple Dr', 'Admitted'),
+('Ethan', 'Miller', 'Male', '1988-02-25', '5555556666', '202 Birch Ln', 'Admitted'),
+('Olivia', 'Davis', 'Female', '1995-04-14', '5556667777', '303 Cedar St', 'Admitted'),
+('Liam', 'Wilson', 'Male', '1983-10-10', '5557778888', '404 Elm Ct', 'Discharged'),
+('Emma', 'Taylor', 'Female', '1991-01-22', '5558889999', '505 Spruce Blvd', 'Admitted'),
+('Noah', 'Anderson', 'Male', '1986-06-05', '5559990000', '606 Walnut Rd', 'Admitted'),
+('Ava', 'Thomas', 'Female', '1993-03-12', '5550001111', '707 Willow Way', 'Admitted');
+
+Check All Patients:
+SELECT * FROM Patients;
+
+Doctors:
+INSERT INTO Doctors (first_name, last_name, specialization, phone, email)
+VALUES
+('Dr. Emma', 'Brown', 'Cardiology', '5551234001', 'emma.brown@hospital.com'),
+('Dr. Liam', 'White', 'Neurology', '5551234002', 'liam.white@hospital.com'),
+('Dr. Noah', 'Adams', 'Orthopedics', '5551234003', 'noah.adams@hospital.com'),
+('Dr. Ava', 'Clark', 'Pediatrics', '5551234004', 'ava.clark@hospital.com'),
+('Dr. Mason', 'Lewis', 'Dermatology', '5551234005', 'mason.lewis@hospital.com'),
+('Dr. Olivia', 'Harris', 'General Medicine', '5551234006', 'olivia.harris@hospital.com'),
+('Dr. Lucas', 'Robinson', 'ENT', '5551234007', 'lucas.robinson@hospital.com'),
+('Dr. Mia', 'Walker', 'Gynecology', '5551234008', 'mia.walker@hospital.com'),
+('Dr. James', 'Hall', 'Oncology', '5551234009', 'james.hall@hospital.com'),
+('Dr. Isabella', 'Young', 'Psychiatry', '5551234010', 'isabella.young@hospital.com');
+
+Visits (Appointments):
+INSERT INTO Visits (patient_id, doctor_id, visit_date, diagnosis, treatment, status)
+VALUES
+(1, 1, '2025-10-10 09:00:00', 'High BP', 'Medication', 'Completed'),
+(2, 2, '2025-10-11 10:30:00', 'Migraine', 'Pain relief tablets', 'Completed'),
+(3, 3, '2025-10-12 11:00:00', 'Fracture', 'Cast applied', 'Completed'),
+(4, 4, '2025-10-13 09:45:00', 'Fever', 'Paracetamol', 'Completed'),
+(5, 5, '2025-10-14 15:00:00', 'Skin Rash', 'Ointment', 'Scheduled'),
+(6, 6, '2025-10-15 14:00:00', 'Cold and Cough', 'Antibiotics', 'Completed'),
+(7, 7, '2025-10-16 12:30:00', 'Ear Infection', 'Drops', 'Completed'),
+(8, 8, '2025-10-17 13:15:00', 'Routine Checkup', 'Counseling', 'Scheduled'),
+(9, 9, '2025-10-18 08:45:00', 'Cancer Follow-up', 'Chemotherapy', 'Completed'),
+(10, 10, '2025-10-19 16:00:00', 'Depression', 'Therapy session', 'Scheduled');
+
+Bills:
+INSERT INTO Bills (visit_id, total_amount, amount_paid, payment_status)
+VALUES
+(1, 200.00, 200.00, 'Paid'),
+(2, 150.00, 150.00, 'Paid'),
+(3, 500.00, 250.00, 'Partial'),
+(4, 100.00, 100.00, 'Paid'),
+(5, 180.00, 0.00, 'Pending'),
+(6, 220.00, 220.00, 'Paid'),
+(7, 130.00, 130.00, 'Paid'),
+(8, 90.00, 0.00, 'Pending'),
+(9, 1000.00, 800.00, 'Partial'),
+(10, 250.00, 100.00, 'Partial');
+
+Check All Appointments:
+SELECT v.visit_id, p.first_name AS patient, d.first_name AS doctor, v.visit_date, v.status
+FROM Visits v
+JOIN Patients p ON v.patient_id = p.patient_id
+JOIN Doctors d ON v.doctor_id = d.doctor_id;
+
+Check Bills Summary:
+SELECT b.bill_id, p.first_name AS patient, b.total_amount, b.amount_paid, b.payment_status
+FROM Bills b
+JOIN Visits v ON b.visit_id = v.visit_id
+JOIN Patients p ON v.patient_id = p.patient_id;
+
+3. Queries - appointments and payments:
+
+Show Upcoming Appointments:
+SELECT v.visit_id, p.first_name AS patient, d.first_name AS doctor, v.visit_date, v.status
+FROM Visits v
+JOIN Patients p ON v.patient_id = p.patient_id
+JOIN Doctors d ON v.doctor_id = d.doctor_id
+WHERE v.status = 'Scheduled'
+ORDER BY v.visit_date;
+
+Show Pending Payments:
+SELECT b.bill_id, p.first_name AS patient, b.total_amount, b.amount_paid, b.payment_status
+FROM Bills b
+JOIN Visits v ON b.visit_id = v.visit_id
+JOIN Patients p ON v.patient_id = p.patient_id
+WHERE b.payment_status <> 'Paid';
+
+4. Stored Procedure - Billing Calculation
+
+DELIMITER //
+CREATE PROCEDURE calculate_bill(
+    IN in_visit_id INT,
+    IN in_treatment_cost DECIMAL(10,2),
+    IN in_doctor_fee DECIMAL(10,2)
+)
+BEGIN
+    DECLARE total_amount DECIMAL(10,2);
+
+    -- Step 1: Calculate total
+    SET total_amount = in_treatment_cost + in_doctor_fee;
+
+    -- Step 2: Check if bill already exists for this visit
+    IF EXISTS (SELECT 1 FROM Bills WHERE visit_id = in_visit_id) THEN
+        -- Update existing bill
+        UPDATE Bills
+        SET total_amount = total_amount,
+            amount_paid = 0.00,
+            payment_status = 'Pending',
+            created_at = NOW()
+        WHERE visit_id = in_visit_id;
+    ELSE
+        -- Insert new bill
+        INSERT INTO Bills (visit_id, total_amount, amount_paid, payment_status, created_at)
+        VALUES (in_visit_id, total_amount, 0.00, 'Pending', NOW());
+    END IF;
+
+    -- Step 3: Return the updated/created bill
+    SELECT 
+        b.bill_id,
+        v.visit_id,
+        p.first_name AS patient_name,
+        d.first_name AS doctor_name,
+        b.total_amount,
+        b.amount_paid,
+        b.payment_status,
+        b.created_at
+    FROM Bills b
+    JOIN Visits v ON b.visit_id = v.visit_id
+    JOIN Patients p ON v.patient_id = p.patient_id
+    JOIN Doctors d ON v.doctor_id = d.doctor_id
+    WHERE v.visit_id = in_visit_id;
+END //
+DELIMITER ;
+
+CALL calculate_bill(8, 120.00, 30.00);
+
+5. Triggers:
+
+Trigger for Auto Status Update on Discharge:
+DELIMITER //
+CREATE TRIGGER after_patient_discharge
+AFTER UPDATE ON Patients
+FOR EACH ROW
+BEGIN
+    -- If patient status changes to 'Discharged',
+    -- update all their scheduled visits to 'Completed'
+    IF NEW.status = 'Discharged' THEN
+        UPDATE Visits
+        SET status = 'Completed'
+        WHERE patient_id = NEW.patient_id
+          AND status = 'Scheduled';
+    END IF;
+END //
+DELIMITER ;
+
+Check a patient’s current status:
+SELECT * FROM Patients WHERE patient_id = 5;
+
+Update status to trigger discharge:
+UPDATE Patients
+SET status = 'Discharged'
+WHERE patient_id = 5;
+
+Verify the effect:
+SELECT visit_id, status 
+FROM Visits 
+WHERE patient_id = 5;
+
+6.Generate visit reports:
+
+Visit Report (Doctor-wise):
+SELECT d.first_name AS doctor, COUNT(v.visit_id) AS total_visits
+FROM Doctors d
+LEFT JOIN Visits v ON d.doctor_id = v.doctor_id
+GROUP BY d.doctor_id;
+
+Billing Report (Summary):
+SELECT 
+    p.first_name AS patient,
+    SUM(b.total_amount) AS total_billed,
+    SUM(b.amount_paid) AS total_paid,
+    SUM(b.total_amount - b.amount_paid) AS balance_due
+FROM Bills b
+JOIN Visits v ON b.visit_id = v.visit_id
+JOIN Patients p ON v.patient_id = p.patient_id
+GROUP BY p.patient_id;
