@@ -1,15 +1,45 @@
 # Hospital_Management-Elevate
 1.Create Database and Tables:
   Patients Table
+  Stores personal and medical status details for all patients.
+      Columns:
+      patient_id (INT, PK)
+      first_name, last_name (VARCHAR)
+      gender (ENUM: Male, Female, Other)
+      date_of_birth (DATE)
+      phone, address (VARCHAR)
+      status (ENUM: Admitted, Discharged, default: Admitted)
+      created_at (TIMESTAMP)
   <img width="1920" height="1020" alt="patient" src="https://github.com/user-attachments/assets/6c47e94c-2124-4701-9c98-e7fc54e6e700" />
 
   Doctors Table
+  Stores doctor profiles and specializations.
+      Columns:
+      doctor_id (INT, PK)
+      first_name, last_name (VARCHAR)
+      specialization (VARCHAR)
+      phone, email (VARCHAR)
+      created_at (TIMESTAMP)
   <img width="1920" height="1020" alt="doctors" src="https://github.com/user-attachments/assets/988aa3e0-74ae-42ca-b11b-bb8506752c3b" />
 
   Visits Table(Appointments)
+  Manages patient appointments and treatments.
+      Columns:
+      visit_id (INT, PK)
+      patient_id, doctor_id (FK)
+      visit_date (DATETIME)
+      diagnosis, treatment (VARCHAR)
+      status (ENUM: Scheduled, Completed, Cancelled, default: Scheduled)
   <img width="1920" height="1020" alt="visits" src="https://github.com/user-attachments/assets/5c7fdbed-c276-48cf-94ea-c53185386f07" />
 
   Bills Table
+  Stores billing information for each visit.
+        Columns:
+        bill_id (INT, PK)
+        visit_id (FK)
+        total_amount, amount_paid (DECIMAL)
+        payment_status (ENUM: Pending, Paid, Partial, default: Pending)
+        created_at (TIMESTAMP)
   <img width="1920" height="1020" alt="bills" src="https://github.com/user-attachments/assets/b7dcaf15-a666-4fd9-8738-b930ca03eb65" />
 
   Check All Appointments:
@@ -26,9 +56,15 @@
    <img width="1920" height="1020" alt="pending-pay" src="https://github.com/user-attachments/assets/872d17ee-de75-41e8-be7d-e477f5d6be4b" />
 
 3. Stored Procedure for Billing Calculation
+   Calculate Bill for a Visit:
+        Calculates total charges (treatment_cost + doctor_fee)
+        Inserts new bill or updates existing bill
+        Returns detailed bill info including patient and doctor names
   <img width="1920" height="1020" alt="stored-pro" src="https://github.com/user-attachments/assets/568f68dd-7a52-45ee-982d-013f61386c81" />
 
-4. Triggers
+5. Triggers
+   Auto Status Update on Discharge:
+      When a patient is marked as Discharged, all their scheduled visits are automatically updated to Completed.
   Check Patients Current Status
   <img width="1920" height="1020" alt="trigger" src="https://github.com/user-attachments/assets/c90beb66-fc65-4a36-841c-c09d410bbbb0" />
 
@@ -36,6 +72,8 @@
    <img width="1920" height="1020" alt="update-tri" src="https://github.com/user-attachments/assets/78b5bc11-4c97-4499-b629-93e6b4278d55" />
 
 5. Reports
+    Doctor-wise Visit Report: Count of visits per doctor.
+    Billing Summary: Total billed, total paid, and balance due for each patient.
   Visit Report(Doctor-wise)
   <img width="1920" height="1020" alt="visit-rep" src="https://github.com/user-attachments/assets/c95ba695-9a05-487b-92e1-b2b2acac32bc" />
 
